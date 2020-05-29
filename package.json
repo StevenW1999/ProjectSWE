@@ -1,0 +1,11 @@
+{
+  "name": "projectswe",
+  "version": "1.0.0",
+  "description": "type safe linq orm in typescript",
+  "main": "./src/index.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.3"
+  }
+}

@@ -1,9 +1,10 @@
 
 import { Student } from '../types/Types';
+import {Selectable} from '../core/Main'
 
 let S1: Student = ({
     Name: 'Test',
-    StudentNumber: 0932323,
+    StudentNumber: 2323,
     Surname: 'Test',
     Grades: [{
         Grade: 8,
@@ -18,7 +19,7 @@ let S1: Student = ({
 
 let S2: Student = ({
     Name: 'Steve',
-    StudentNumber: 0932382,
+    StudentNumber: 32382,
     Surname: 'Wanggang',
     Grades: [{
         Grade: 8,
@@ -75,3 +76,14 @@ let S5: Student = ({
     }],
 
 });
+
+let students = [S1, S2, S3, S4, S5]
+let selectableStudents = Selectable<Student, Student>(students);
+let selection = selectableStudents
+    .select('Name').select('StudentNumber', 'Surname')
+    .include('Grades', q => q.select('Grade','CourseId')
+        .orderBy('ASC', 'CourseId')).orderBy('ASC', 'Surname')
+    .result
+
+// Pretty print the result
+console.log('QueryResult', JSON.stringify( selection, null, 4));
