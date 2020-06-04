@@ -1,5 +1,5 @@
 
-import { Student } from '../types/Types';
+import { Student } from '../types/Student';
 import {Selectable} from '../core/Main'
 
 let S1: Student = ({
