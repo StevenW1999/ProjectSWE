@@ -1,4 +1,8 @@
-export const getKeysFromObject = <T>(object: T): Array<keyof T> => Object.keys(object) as Array<keyof T>
+/**
+ * This document contains the array related functions for the project.
+ */
+
+export const getKeysFromObject = <T>(object: T): Array<keyof T> => Object.keys(object as any) as Array<keyof T>
 
 export type includeArrays<T> = Pick<T, {
     [K in keyof T]: T[K] extends Array<object> ? K : never

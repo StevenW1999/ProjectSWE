@@ -1,10 +1,9 @@
-
 import { Student } from '../types/Student';
 import {Selectable} from '../core/Main'
 
 let S1: Student = ({
     Name: 'Test',
-    StudentNumber: 2323,
+    StudentNumber: 123123,
     Surname: 'Test',
     Grades: [{
         Grade: 8,
@@ -13,8 +12,7 @@ let S1: Student = ({
     {
         Grade: 10,
         CourseId: 5
-    }
-    ],
+    }]
 });
 
 let S2: Student = ({
@@ -28,8 +26,7 @@ let S2: Student = ({
     {
         Grade: 9,
         CourseId: 4,
-    }],
-
+    }]
 });
 
 let S3: Student = ({
@@ -43,8 +40,11 @@ let S3: Student = ({
     {
         Grade: 8.5,
         CourseId: 2,
-    }],
-
+    },
+    {
+        Grade: 1,
+        CourseId: 9,
+    }]
 });
 
 let S4: Student = ({
@@ -58,8 +58,7 @@ let S4: Student = ({
     {
         Grade: 2,
         CourseId: 2,
-    }],
-
+    }]
 });
 
 let S5: Student = ({
@@ -73,16 +72,16 @@ let S5: Student = ({
     {
         Grade: 2,
         CourseId: 2,
-    }],
-
+    }]
 });
 
 let students = [S1, S2, S3, S4, S5]
-let selectableStudents = Selectable<Student, Student>(students);
+let selectableStudents = Selectable<Student>(students);
 let selection = selectableStudents
-    .select('Name').select('StudentNumber', 'Surname')
+    .select('Name', 'StudentNumber', 'Surname')
     .include('Grades', q => q.select('Grade','CourseId')
-        .orderBy('ASC', 'CourseId')).orderBy('ASC', 'Surname')
+        .orderBy('ASC', 'CourseId'))
+        .orderBy('ASC', 'Surname')
     .result
 
 // Pretty print the result

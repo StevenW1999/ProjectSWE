@@ -1,3 +1,8 @@
+/**
+ * pick<T,K>
+ * A utility function used to construct a type by picking only the properties K from T
+ */
+
 import * as Utils from './Fun';
 
 export const pick = <T, K extends keyof T>(keys: Array<K>): Utils.Fun<T, Pick<T, K>> => (

@@ -10,27 +10,33 @@ export const orderbyResult = function<R>(result: Array<R>) : Types.orderbyResult
     }
 }
 
-export const Selectable = function<T, B>(object: Array<T>) : Types.Selectable<T, B> {
+export const Selectable = function<T>(object: Array<T>) : Types.Selectable<T> {
     return {
         object: object,
-        select: function<K extends keyof T>(...entities: Array<K>) : Types.Queryable<omit<T, K>, Pick<T, K>, Array.excludeArray<Pick<T,K>>> {
+        select: function<K extends keyof T>(...selectedProps: Array<K>) : Types.Queryable<omit<T, K>, Pick<T, K>, Array.excludeArray<Pick<T,K>>> {
 
-            let newResult = <any>([]);
-            const objectLength = object.length;
-            for(let i = 0; i < objectLength; i++){
-                if(Object.keys(object[i]).length > 1){
-                    let subArray: any = object[i] as any
-                    newResult[i] = []
-                    for(let g = 0; g < subArray.length; g++){
-                        newResult[i].push(pick<T,K>(entities).f(subArray[g]))
-                    }
-                }
-                else {
-                    newResult[i] = pick<T,K>(entities).f(object[i])
-                }
-            }
+           let newResult = <any>([]);
+           const objectLength = object.length;
+           for(let i = 0; i < objectLength; i++){
+               newResult[i] = {
+                   ...pick<T,K>(selectedProps).f(object[i])
+               }
+               
+               // Loop through properties that are an Array
+               if((<any>object)[i][0]) {
+                   newResult[i] = []
+                   for(let g = 0; g < Object.keys((<any>object)[i]).length; g++) {
+                       newResult[i][g] = {
+                           ...pick<T,K>(selectedProps).f((<any>object)[i][g])
+                       };
+                   }
+               }
+           }
+            
             const newObject = <any>([])
-            object.forEach(element => { newObject.push(omit<T, K>(entities).f(element)); });
+            object.forEach(element => { newObject.push(omit<T, K>(selectedProps).f(element)); });
+
+            // Store the object and result in a Queryable
             return Queryable<omit<T, K>, Pick<T, K>, Array.excludeArray<Pick<T,K>>>(newObject, newResult);
         }
     }
@@ -64,11 +70,12 @@ export const Queryable = function<T, R, B>(object: Array<T>, result: Array<R>) :
             const newObject = <any>([])
             object.forEach(element => { newObject.push(omit<T, K>(selectedEntites).f(element)); });
 
+            // Store the object and result in the new Queryable
             return Queryable<omit<T, K>, R & Pick<T, K>, B & Array.excludeArray<T>>(newObject, newResult);
         },
         include: function<K extends keyof Array.includeArrays<T>, s, r, b>(
             entity: K,
-            query: (selectable: Types.Selectable<Array.getKeysFromArray<T, K>, B>) => Types.Queryable<s, r, b> | Types.orderbyResult<r>
+            query: (selectable: Types.Selectable<Array.getKeysFromArray<T, K>>) => Types.Queryable<s, r, b> | Types.orderbyResult<r>
         ) : Types.Queryable<omit<T, K>, R & { [key in K]: Array<r> }, B> {
 
             const entityInArray: Array<K> = [];
@@ -79,7 +86,7 @@ export const Queryable = function<T, R, B>(object: Array<T>, result: Array<R>) :
             const keysFromEntity = <any>([])
             object.forEach(element => { keysFromEntity.push((<any>element)[entity]); })
 
-            const selectableFromEntity: Types.Selectable<Array.getKeysFromArray<T, K>, B> = Selectable(keysFromEntity);
+            const selectableFromEntity: Types.Selectable<Array.getKeysFromArray<T, K>> = Selectable(keysFromEntity);
 
             const queryResult = query(selectableFromEntity).result;
 
