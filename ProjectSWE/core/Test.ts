@@ -80,8 +80,7 @@ let selectableStudents = Selectable<Student>(students);
 let selection = selectableStudents
     .select('Name', 'StudentNumber', 'Surname')
     .include('Grades', q => q.select('Grade','CourseId')
-        .orderBy('ASC', 'CourseId'))
-        .orderBy('ASC', 'Surname')
+        .orderBy('ASC', 'CourseId')).orderBy('DESC', 'Surname')
     .result
 
 // Pretty print the result

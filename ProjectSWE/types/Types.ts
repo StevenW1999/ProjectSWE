@@ -28,8 +28,7 @@ export type Queryable<T, R, B> = {
         entity: K,
         query: (selectable: Selectable<Array.getKeysFromArray<T, K>>) => Queryable<s, r, b> | orderbyResult<r>
     ) => Queryable<omit<T, K>, R & { [key in K]: Array<r> }, B>,
-    orderBy: <H extends keyof B>(type: 'ASC' | 'DESC', entity: H) => orderbyResult<R>,
-
+    orderBy: <H extends keyof B>(type: OrderType, entity: H) => orderbyResult<R>,
 }
 
 /**
@@ -39,3 +38,6 @@ export type Queryable<T, R, B> = {
 export type orderbyResult<R> = {
     result: Array<R>
 }
+
+// Indicates whether results of an order command should be sorted in ascending or descending order
+export type OrderType = 'ASC' | 'DESC';

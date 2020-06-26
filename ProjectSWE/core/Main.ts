@@ -101,7 +101,7 @@ export const Queryable = function<T, R, B>(object: Array<T>, result: Array<R>) :
 
             return Queryable<omit<T, K>, R & { [key in K]: Array<r> }, B>(newObject, newResult);
         },
-        orderBy: function<H extends keyof B>(type: 'ASC' | 'DESC', entity: H): Types.orderbyResult<R> {
+        orderBy: function<H extends keyof B>(type: Types.OrderType, entity: H): Types.orderbyResult<R> {
             const newResult = result as any
             let orderedNewResult: Array<R> = result;
 
